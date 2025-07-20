@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST="{\"components/Hero.tsx -> ../components/PipelineScene\":{\"id\":\"components/Hero.tsx -> ../components/PipelineScene\",\"files\":[\"static/chunks/components_PipelineScene_tsx.js\"]},\"pages/index.tsx -> ../components/Hero\":{\"id\":\"pages/index.tsx -> ../components/Hero\",\"files\":[\"static/chunks/components_Hero_tsx.js\"]}}"
