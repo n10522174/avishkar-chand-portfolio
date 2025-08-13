@@ -4,18 +4,67 @@ import { motion } from 'framer-motion';
 import { FaTimes } from 'react-icons/fa';
 import Image from 'next/image';
 
+// Add TypeScript interfaces
+interface GameProps {
+  onClose: () => void;
+}
+
+interface NintendoSwitchProps {
+  onClose: () => void;
+}
+
+interface Position {
+  x: number;
+  y: number;
+}
+
+interface SnakeSegment {
+  x: number;
+  y: number;
+}
+
+interface Direction {
+  x: number;
+  y: number;
+}
+
+interface Pipe {
+  x: number;
+  topHeight: number;
+  bottomY: number;
+}
+
+interface TetrisPiece {
+  shape: number[][];
+  color: number;
+  x: number;
+  y: number;
+}
+
+interface Ball {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+}
+
+interface Score {
+  left: number;
+  right: number;
+}
+
 // Snake Game Component
-function SnakeGame({ onClose }) {
-  const [snake, setSnake] = useState([{ x: 10, y: 10 }]);
-  const [food, setFood] = useState({ x: 15, y: 15 });
-  const [direction, setDirection] = useState({ x: 0, y: 0 });
+function SnakeGame({ onClose }: GameProps) {
+  const [snake, setSnake] = useState<SnakeSegment[]>([{ x: 10, y: 10 }]);
+  const [food, setFood] = useState<Position>({ x: 15, y: 15 });
+  const [direction, setDirection] = useState<Direction>({ x: 0, y: 0 });
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
   const [gameStarted, setGameStarted] = useState(false);
 
   const BOARD_SIZE = 20;
 
-  const generateFood = useCallback(() => {
+  const generateFood = useCallback((): Position => {
     return {
       x: Math.floor(Math.random() * BOARD_SIZE),
       y: Math.floor(Math.random() * BOARD_SIZE)
@@ -37,7 +86,7 @@ function SnakeGame({ onClose }) {
   };
 
   useEffect(() => {
-    const handleKeyPress = (e) => {
+    const handleKeyPress = (e: KeyboardEvent) => {
       if (!gameStarted) {
         if (e.code === 'Space') {
           e.preventDefault();
@@ -165,10 +214,10 @@ function SnakeGame({ onClose }) {
 }
 
 // Flappy Bird Game Component
-function FlappyBirdGame({ onClose }) {
+function FlappyBirdGame({ onClose }: GameProps) {
   const [birdY, setBirdY] = useState(200);
   const [velocity, setVelocity] = useState(0);
-  const [pipes, setPipes] = useState([]);
+  const [pipes, setPipes] = useState<Pipe[]>([]);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
@@ -197,7 +246,7 @@ function FlappyBirdGame({ onClose }) {
   };
 
   useEffect(() => {
-    const handleKeyPress = (e) => {
+    const handleKeyPress = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
         e.preventDefault();
         jump();
@@ -339,9 +388,9 @@ function FlappyBirdGame({ onClose }) {
 }
 
 // Tetris Game Component (Simplified Version)
-function TetrisGame({ onClose }) {
-  const [board, setBoard] = useState(() => Array(20).fill().map(() => Array(10).fill(0)));
-  const [currentPiece, setCurrentPiece] = useState(null);
+function TetrisGame({ onClose }: GameProps) {
+  const [board, setBoard] = useState<number[][]>(() => Array(20).fill(null).map(() => Array(10).fill(0)));
+  const [currentPiece, setCurrentPiece] = useState<TetrisPiece | null>(null);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
@@ -358,7 +407,7 @@ function TetrisGame({ onClose }) {
 
   const colors = ['', '#00f5ff', '#ffff00', '#ff00ff', '#00ff00', '#ff0000', '#0000ff', '#ffa500'];
 
-  const createNewPiece = () => {
+  const createNewPiece = (): TetrisPiece => {
     const piece = tetrominoes[Math.floor(Math.random() * tetrominoes.length)];
     return {
       shape: piece.shape,
@@ -369,7 +418,7 @@ function TetrisGame({ onClose }) {
   };
 
   const resetGame = () => {
-    setBoard(Array(20).fill().map(() => Array(10).fill(0)));
+    setBoard(Array(20).fill(null).map(() => Array(10).fill(0)));
     setCurrentPiece(null);
     setScore(0);
     setGameOver(false);
@@ -381,7 +430,7 @@ function TetrisGame({ onClose }) {
     setCurrentPiece(createNewPiece());
   };
 
-  const isValidMove = (piece, newX, newY, newShape = piece.shape) => {
+  const isValidMove = (piece: TetrisPiece, newX: number, newY: number, newShape: number[][] = piece.shape): boolean => {
     for (let y = 0; y < newShape.length; y++) {
       for (let x = 0; x < newShape[y].length; x++) {
         if (newShape[y][x]) {
@@ -397,6 +446,8 @@ function TetrisGame({ onClose }) {
   };
 
   const placePiece = () => {
+    if (!currentPiece) return;
+
     const newBoard = board.map(row => [...row]);
     for (let y = 0; y < currentPiece.shape.length; y++) {
       for (let x = 0; x < currentPiece.shape[y].length; x++) {
@@ -432,7 +483,7 @@ function TetrisGame({ onClose }) {
   };
 
   useEffect(() => {
-    const handleKeyPress = (e) => {
+    const handleKeyPress = (e: KeyboardEvent) => {
       if (!gameStarted) {
         if (e.code === 'Space') {
           e.preventDefault();
@@ -446,17 +497,17 @@ function TetrisGame({ onClose }) {
       switch (e.key) {
         case 'ArrowLeft':
           if (isValidMove(currentPiece, currentPiece.x - 1, currentPiece.y)) {
-            setCurrentPiece(prev => ({ ...prev, x: prev.x - 1 }));
+            setCurrentPiece(prev => prev ? { ...prev, x: prev.x - 1 } : null);
           }
           break;
         case 'ArrowRight':
           if (isValidMove(currentPiece, currentPiece.x + 1, currentPiece.y)) {
-            setCurrentPiece(prev => ({ ...prev, x: prev.x + 1 }));
+            setCurrentPiece(prev => prev ? { ...prev, x: prev.x + 1 } : null);
           }
           break;
         case 'ArrowDown':
           if (isValidMove(currentPiece, currentPiece.x, currentPiece.y + 1)) {
-            setCurrentPiece(prev => ({ ...prev, y: prev.y + 1 }));
+            setCurrentPiece(prev => prev ? { ...prev, y: prev.y + 1 } : null);
           } else {
             placePiece();
           }
@@ -473,7 +524,7 @@ function TetrisGame({ onClose }) {
 
     const dropInterval = setInterval(() => {
       if (isValidMove(currentPiece, currentPiece.x, currentPiece.y + 1)) {
-        setCurrentPiece(prev => ({ ...prev, y: prev.y + 1 }));
+        setCurrentPiece(prev => prev ? { ...prev, y: prev.y + 1 } : null);
       } else {
         placePiece();
       }
@@ -482,7 +533,7 @@ function TetrisGame({ onClose }) {
     return () => clearInterval(dropInterval);
   }, [currentPiece, board, gameStarted, gameOver]);
 
-  const renderBoard = () => {
+  const renderBoard = (): number[][] => {
     const displayBoard = board.map(row => [...row]);
     
     if (currentPiece) {
@@ -558,11 +609,11 @@ function TetrisGame({ onClose }) {
 }
 
 // Pong Game Component
-function PongGame({ onClose }) {
+function PongGame({ onClose }: GameProps) {
   const [leftPaddle, setLeftPaddle] = useState(150);
   const [rightPaddle, setRightPaddle] = useState(150);
-  const [ball, setBall] = useState({ x: 200, y: 150, vx: 3, vy: 3 });
-  const [score, setScore] = useState({ left: 0, right: 0 });
+  const [ball, setBall] = useState<Ball>({ x: 200, y: 150, vx: 3, vy: 3 });
+  const [score, setScore] = useState<Score>({ left: 0, right: 0 });
   const [gameStarted, setGameStarted] = useState(false);
 
   const PADDLE_HEIGHT = 60;
@@ -585,7 +636,7 @@ function PongGame({ onClose }) {
   };
 
   useEffect(() => {
-    const handleKeyPress = (e) => {
+    const handleKeyPress = (e: KeyboardEvent) => {
       if (!gameStarted) {
         if (e.code === 'Space') {
           e.preventDefault();
@@ -731,8 +782,8 @@ function PongGame({ onClose }) {
   );
 }
 
-export default function NintendoSwitch({ onClose }) {
-  const [currentGame, setCurrentGame] = useState(null);
+export default function NintendoSwitch({ onClose }: NintendoSwitchProps) {
+  const [currentGame, setCurrentGame] = useState<string | null>(null);
 
   const games = [
     { id: 'snake', name: 'Snake', emoji: '🐍', color: 'bg-green-600' },
@@ -742,14 +793,14 @@ export default function NintendoSwitch({ onClose }) {
   ];
 
   const renderGame = () => {
-    const gameComponents = {
+    const gameComponents: Record<string, JSX.Element> = {
       snake: <SnakeGame onClose={() => setCurrentGame(null)} />,
       flappy: <FlappyBirdGame onClose={() => setCurrentGame(null)} />,
       tetris: <TetrisGame onClose={() => setCurrentGame(null)} />,
       pong: <PongGame onClose={() => setCurrentGame(null)} />
     };
 
-    return gameComponents[currentGame] || (
+    return gameComponents[currentGame || ''] || (
       <div className="w-full h-full bg-gray-900 rounded p-6 flex flex-col items-center justify-center">
         <h3 className="text-white text-2xl mb-6">Coming soon...</h3>
         <button
