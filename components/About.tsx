@@ -9,7 +9,7 @@ const jetBrainsMono = localFont({
 });
 
 // CLI Typewriter Component
-function CLITypewriter({ text, speed = 50, delay = 0, key }) {
+function CLITypewriter({ text, speed = 50, delay = 0, key }: { text: string; speed?: number; delay?: number; key: string }) {
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showCursor, setShowCursor] = useState(true);
@@ -60,7 +60,8 @@ function CLITypewriter({ text, speed = 50, delay = 0, key }) {
 }
 
 export default function About() {
-  const [activeTab, setActiveTab] = useState('summary');
+  type TabKey = keyof typeof commands;
+  const [activeTab, setActiveTab] = useState<TabKey>('summary');
 
   const commands = {
     summary: `> whoami
@@ -120,10 +121,10 @@ total 8
   };
 
   const tabs = [
-    { id: 'summary', label: 'Summary', icon: '👨‍💻' },
-    { id: 'skills', label: 'Skills', icon: '🛠️' },
-    { id: 'education', label: 'Education', icon: '🎓' },
-    { id: 'certifications', label: 'Certifications', icon: '📜' }
+    { id: 'summary' as TabKey, label: 'Summary', icon: '👨‍💻' },
+    { id: 'skills' as TabKey, label: 'Skills', icon: '🛠️' },
+    { id: 'education' as TabKey, label: 'Education', icon: '🎓' },
+    { id: 'certifications' as TabKey, label: 'Certifications', icon: '📜' }
   ];
 
   return (

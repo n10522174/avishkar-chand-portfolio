@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { FaMobileAlt, FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
-import PhoneSimulator from '../components/PhoneSection';
+import PhoneSimulator from './PhoneSection';
 import NintendoSwitch from '../components/NintendoSwitch';
 import localFont from 'next/font/local';
 
@@ -19,7 +19,13 @@ const PipelineScene = dynamic(
   { ssr: false, suspense: true }
 );
 
-function Typewriter({ text, speed = 50 }) {
+// Fix: Add proper TypeScript types
+interface TypewriterProps {
+  text: string;
+  speed?: number;
+}
+
+function Typewriter({ text, speed = 50 }: TypewriterProps) {
   const [displayedText, setDisplayedText] = useState("");
   useEffect(() => {
     let index = 0;
@@ -34,8 +40,19 @@ function Typewriter({ text, speed = 50 }) {
   return <pre style={{ whiteSpace: "pre-wrap", margin: 0 }}>{displayedText}</pre>;
 }
 
-// Contact Modal Component
-function ContactModal({ onClose }) {
+// Fix: Add proper TypeScript types for ContactModal
+interface ContactModalProps {
+  onClose: () => void;
+}
+
+function ContactModal({ onClose }: ContactModalProps) {
+  // Fix: Add form submission handler with proper typing
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Add your form submission logic here
+    console.log('Form submitted');
+  };
+
   return (
     <motion.div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -60,7 +77,7 @@ function ContactModal({ onClose }) {
           </button>
         </div>
         
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <input
             type="text"
             placeholder="Name"
@@ -410,10 +427,6 @@ bit of 🎉🎉🎉`;
         <FaMobileAlt className="text-xl md:text-2xl" />
       </motion.button>
 
-      {/* ====== Phone modal ====== */}
-      <AnimatePresence>
-        {showPhone && <PhoneSimulator onClose={() => setShowPhone(false)} />}
-      </AnimatePresence>
 
       {/* ====== Contact modal ====== */}
       <AnimatePresence>

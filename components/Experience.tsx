@@ -2,11 +2,31 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
+// Define the experience type
+type Experience = {
+  id: number;
+  title: string;
+  company: string;
+  period: string;
+  type: string;
+  summary: string;
+  details: {
+    description: string;
+    achievements: string[];
+    technologies: string[];
+  };
+  gradient: string;
+  borderColor: string;
+  hoverColor: string;
+  shadowColor: string;
+};
+
 export default function Experience() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedExperience, setSelectedExperience] = useState(null);
+  const [selectedExperience, setSelectedExperience] = useState<Experience | null>(null);
 
-  const experiences = [
+  const experiences: Experience[] = [
+    // ...existing experiences array...
     {
       id: 1,
       title: "Data Platform Engineer",
@@ -68,13 +88,15 @@ export default function Experience() {
     );
   };
 
-  const openModal = (experience) => {
+  const openModal = (experience: Experience) => {
     setSelectedExperience(experience);
   };
 
   const closeModal = () => {
     setSelectedExperience(null);
   };
+
+  // ...existing code continues unchanged...
 
   const cardVariants = {
     hidden: { opacity: 0, y: 100, scale: 0.8 },
@@ -138,7 +160,7 @@ export default function Experience() {
         viewport={{ once: true }}
         className='text-4xl md:text-5xl font-bold text-white mb-16 text-center bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent'
       >
-        What Adventures Have I Been On?
+        What Adventures Have I Worked?
       </motion.h3>
 
       <div className='relative'>

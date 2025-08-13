@@ -1,8 +1,33 @@
 import { motion } from 'framer-motion';
 import { useState, useMemo } from 'react';
 
+// Add TypeScript interfaces
+interface Skill {
+  name: string;
+  color: string;
+}
+
+interface SkillCategory {
+  id: string;
+  title: string;
+  icon: string;
+  skills: Skill[];
+  gradient: string;
+  borderColor: string;
+}
+
+interface SkillCardProps {
+  skill: Skill;
+  index: number;
+}
+
+interface SkillSectionProps {
+  category: SkillCategory;
+  index: number;
+}
+
 export default function Skills() {
-  const skillCategories = [
+  const skillCategories: SkillCategory[] = [
     {
       id: 'cloud',
       title: 'Cloud Platforms',
@@ -87,7 +112,7 @@ export default function Skills() {
     }
   ];
 
-  const SkillCard = ({ skill, index }) => (
+  const SkillCard = ({ skill, index }: SkillCardProps) => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -114,7 +139,7 @@ export default function Skills() {
     </motion.div>
   );
 
-  const SkillSection = ({ category, index }) => {
+  const SkillSection = ({ category, index }: SkillSectionProps) => {
     const skillCount = category.skills?.length || 0;
 
     const animationConfig = useMemo(
@@ -242,7 +267,7 @@ export default function Skills() {
                 <h4 className="text-white font-semibold group-hover:text-gray-100 transition-colors duration-300">
                   {skill.name}
                 </h4>
-                </div>
+              </div>
             </motion.div>
           ))}
         </div>
